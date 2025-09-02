@@ -3,6 +3,8 @@ import User from "../../models/User";
 import bcrypt from "bcrypt";
 import jwt, { TokenExpiredError } from "jsonwebtoken";
 import { env } from "../../config";
+import { generateHashPassword } from "../../utils/hashPassword";
+import { generatetoken } from "../../utils/jwt";
 
 export const signup = async (
   req: Request,
@@ -19,15 +21,10 @@ export const signup = async (
     if (usernameExists) {
       return next({ message: "username already exists!", status: 400 });
     }
-    const saltRouonds = 10;
-    req.body.password = await bcrypt.hash(password, saltRouonds);
+    req.body.password = await generateHashPassword(password);
 
     const newUser = await User.create(req.body);
-
-    const payload = { _id: newUser._id, username };
-    const secret = env.JWT_Secret!;
-    const options = { expiresIn: env.JWTEXP } as jwt.SignOptions;
-    const token = jwt.sign(payload, secret, options);
+    const token = generatetoken(newUser, username);
 
     res.status(201).json({ token });
   } catch (err) {
@@ -54,10 +51,7 @@ export const signin = async (
     if (!isMatch) {
       res.status(400).json({ message: "Invalid credentials" });
     }
-    const payload = { _id: user._id, username };
-    const secret = env.JWT_Secret!;
-    const options = { expiresIn: env.JWTEXP } as jwt.SignOptions;
-    const token = jwt.sign(payload, secret, options);
+    const token = generatetoken(user._id, username);
     res.status(200).json({ token });
   } catch (err) {
     next(err);
