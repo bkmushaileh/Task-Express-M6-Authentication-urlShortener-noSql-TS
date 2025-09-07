@@ -1,8 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import User from "../../models/User";
 import bcrypt from "bcrypt";
-import jwt, { TokenExpiredError } from "jsonwebtoken";
-import { env } from "../../config";
 import { generateHashPassword } from "../../utils/hashPassword";
 import { generatetoken } from "../../utils/jwt";
 
