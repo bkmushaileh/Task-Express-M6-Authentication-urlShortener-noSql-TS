@@ -64,7 +64,6 @@ export const deleteUrl = async (
           $pull: { urls: url._id },
         });
       }
-
       res.status(201).json("Deleted");
     } else {
       res.status(404).json("No URL Found");

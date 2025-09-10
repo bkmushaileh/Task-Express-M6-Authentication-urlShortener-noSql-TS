@@ -5,6 +5,7 @@ import errorHandler from "./middlewares/ErrorHandler";
 import morgan from "morgan";
 import usersRouter from "./apis/users/users.routes";
 import urlsRouter from "./apis/urls/urls.routes";
+import { env } from "./config";
 
 const app = express();
 
@@ -18,6 +19,6 @@ app.use(notFound);
 app.use(errorHandler);
 
 connectDB();
-app.listen(process.env.PORT, () => {
-  console.log(`Server is running on port ${process.env.PORT}`);
+app.listen(env.PORT, () => {
+  console.log(`Server is running on port ${env.PORT}`);
 });
